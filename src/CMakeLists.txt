@@ -19,22 +19,6 @@ if( USE_KEYCHAIN )
     list( APPEND TARGET_LIBRARIES "-framework Security" )
 endif()
 
-if( LIBDIGIDOC_FOUND )
-    list( APPEND digidocpp_SRCS DDoc.cpp )
-    include_directories( ${LIBDIGIDOC_INCLUDE_DIR} )
-    if( LIBDIGIDOC_LINKED )
-        list( APPEND digidocpp_DEFS LINKED_LIBDIGIDOC )
-        list( APPEND TARGET_LIBRARIES ${LIBDIGIDOC_LIBRARY} )
-        if( ${BUILD_TYPE} STREQUAL "STATIC" )
-            find_package(Iconv)
-            find_package(LibXml2)
-            list( APPEND TARGET_LIBRARIES ${ICONV_LIBRARIES} ${LIBXML2_LIBRARIES} )
-        endif()
-    else()
-        list( APPEND digidocpp_DEFS DYNAMIC_LIBDIGIDOC )
-    endif()
-endif()
-
 if(ANDROID)
     find_package(Iconv)
     list( APPEND TARGET_LIBRARIES ${ICONV_LIBRARIES} )
@@ -153,6 +137,8 @@ set( CRYPTO_HEADER
     crypto/PKCS12Signer.h
     crypto/Signer.h
     crypto/X509Cert.h
+    crypto/X509CertStore.h
+    crypto/X509DirectoryCertStore.h
 )
 
 if( WIN32 )
@@ -179,7 +165,6 @@ add_library(digidocpp_priv STATIC
     log.cpp
     crypto/Connect.cpp
     crypto/Digest.cpp
-    crypto/TSL.cpp
     crypto/X509Crypto.cpp
     util/File.cpp
     util/DateTime.cpp
@@ -209,7 +194,6 @@ add_library(digidocpp ${BUILD_TYPE}
     Container.cpp
     ASiContainer.cpp
     ASiC_E.cpp
-    ASiC_S.cpp
     SiVaContainer.cpp
     Conf.cpp
     XmlConf.cpp
@@ -217,17 +201,12 @@ add_library(digidocpp ${BUILD_TYPE}
     Exception.cpp
     Signature.cpp
     SignatureXAdES_B.cpp
-    SignatureXAdES_T.cpp
-    SignatureXAdES_LT.cpp
-    SignatureXAdES_LTA.cpp
-    SignatureTST.cpp
-    crypto/OCSP.cpp
     crypto/PKCS11Signer.cpp
     crypto/PKCS12Signer.cpp
     crypto/Signer.cpp
-    crypto/TS.cpp
     crypto/X509Cert.cpp
     crypto/X509CertStore.cpp
+    crypto/X509DirectoryCertStore.cpp
     util/ZipSerialize.cpp
 )
 

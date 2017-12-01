@@ -31,26 +31,13 @@ namespace digidoc
     /**
      * X.509 certificate store interface.
      */
-    class X509CertStore
+    class EXP_DIGIDOC X509CertStore
     {
       public:
-          static const std::set<std::string> CA, TSA, OCSP;
-
           static X509CertStore* instance();
 
-          void activate(const std::string &territory) const;
-          std::vector<X509Cert> certs(const std::set<std::string> &type) const;
-          X509Cert findIssuer(const X509Cert &cert, const std::set<std::string> &type) const;
-          static X509_STORE* createStore(const std::set<std::string> &type, time_t *t = nullptr);
-          bool verify(const X509Cert &cert, bool qscd) const;
-
-      private:
-          X509CertStore();
-          ~X509CertStore();
-          DISABLE_COPY(X509CertStore);
-
-          static int validate(int ok, X509_STORE_CTX *ctx, const std::set<std::string> &type);
-          class Private;
-          Private *d;
+          virtual std::vector<X509Cert> certs(const std::set<std::string> &type) const = 0;
+          virtual X509Cert findIssuer(const X509Cert &cert, const std::set<std::string> &type) const = 0;
+          virtual bool verify(const X509Cert &cert, bool qscd) const = 0;
     };
 }

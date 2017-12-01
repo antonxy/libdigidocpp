@@ -19,28 +19,25 @@
 
 #pragma once
 
-#include "SignatureXAdES_LT.h"
+#include "X509Cert.h"
+#include "X509CertStore.h"
+
+#include <set>
 
 namespace digidoc
 {
-
-class SignatureXAdES_LTA: public SignatureXAdES_LT
-{
-public:
-    SignatureXAdES_LTA(unsigned int id, ASiContainer *bdoc, Signer *signer);
-    SignatureXAdES_LTA(std::istream &sigdata, ASiContainer *bdoc, bool relaxSchemaValidation = false);
-    virtual ~SignatureXAdES_LTA() = default;
-
-    X509Cert ArchiveTimeStampCertificate() const override;
-    std::string ArchiveTimeStampTime() const override;
-    virtual void validate(const std::string &policy) const override;
-    virtual void extendSignatureProfile(const std::string &profile) override;
-
-private:
-    DISABLE_COPY(SignatureXAdES_LTA);
-
-    void calcArchiveDigest(Digest *digest) const;
-    std::vector<unsigned char> tsaBase64() const;
-};
-
+    /**
+     * X.509 certificate store interface.
+     */
+    class EXP_DIGIDOC X509DirectoryCertStore : public X509CertStore
+    {
+      public:
+          X509DirectoryCertStore(std::string ca_directory);
+          std::vector<X509Cert> certs(const std::set<std::string> &type) const;
+          X509Cert findIssuer(const X509Cert &cert, const std::set<std::string> &type) const;
+          bool verify(const X509Cert &cert, bool qscd) const;
+      private:
+          std::string ca_directory;
+          X509_STORE * setup_store() const;
+    };
 }

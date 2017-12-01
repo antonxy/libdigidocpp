@@ -21,7 +21,7 @@
 
 #include "Conf.h"
 #include "DataFile_p.h"
-#include "SignatureXAdES_LTA.h"
+#include "SignatureXAdES_B.h"
 #include "log.h"
 #include "crypto/Digest.h"
 #include "crypto/Signer.h"
@@ -151,7 +151,7 @@ void ASiC_E::addAdESSignature(istream &sigdata)
 
     try
     {
-        addSignature(new SignatureXAdES_LTA(sigdata, this));
+        addSignature(new SignatureXAdES_B(sigdata, this));
     }
     catch(const Exception &e)
     {
@@ -282,7 +282,7 @@ void ASiC_E::parseManifestAndLoadFiles(const ZipSerialize &z)
                 {
                     stringstream data;
                     z.extract(file, data);
-                    addSignature(new SignatureXAdES_LTA(data, this, true));
+                    addSignature(new SignatureXAdES_B(data, this, true));
                 }
                 catch(const Exception &e)
                 {
@@ -331,12 +331,12 @@ Signature* ASiC_E::prepareSignature(Signer *signer)
 {
     if(mediaType() != MIMETYPE_ASIC_E)
         THROW("'%s' format is not supported", mediaType().c_str());
-    return newSignature<SignatureXAdES_LTA>(signer);
+    return newSignature<SignatureXAdES_B>(signer);
 }
 
 Signature *ASiC_E::sign(Signer* signer)
 {
-    SignatureXAdES_LTA *s = static_cast<SignatureXAdES_LTA*>(prepareSignature(signer));
+    SignatureXAdES_B *s = static_cast<SignatureXAdES_B*>(prepareSignature(signer));
     try
     {
         s->setSignatureValue(signer->sign(s->signatureMethod(), s->dataToSign()));
