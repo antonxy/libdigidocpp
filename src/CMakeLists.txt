@@ -8,7 +8,7 @@ if(NOT MINIZIP_FOUND)
         set_target_properties( minizip PROPERTIES COMPILE_FLAGS "-fPIC -Wno-unused-parameter" )
     endif()
     set_target_properties( minizip PROPERTIES COMPILE_DEFINITIONS "NOUNCRYPT;NOCRYPT" )
-    set( MINIZIP_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/src/minizip )
+    set( MINIZIP_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/minizip )
     set( MINIZIP_LIBRARIES minizip )
 endif()
 
@@ -26,9 +26,9 @@ endif()
 
 configure_file( libdigidocpp.pc.cmake libdigidocpp.pc @ONLY )
 configure_file( digidoc-tool.1.cmake digidoc-tool.1 )
-configure_file( ${CMAKE_SOURCE_DIR}/etc/digidocpp.conf.cmake digidocpp.conf )
+configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/../etc/digidocpp.conf.cmake digidocpp.conf )
 
-set(SCHEMA_DIR ${CMAKE_SOURCE_DIR}/etc/schema)
+set(SCHEMA_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../etc/schema)
 set(XML_DIR ${CMAKE_CURRENT_BINARY_DIR}/xml)
 XSD_SCHEMA( xsd_SRCS IGNORE ${XML_DIR} ${SCHEMA_DIR}/conf.xsd
      --root-element configuration )
@@ -185,12 +185,12 @@ set_target_properties(digidocpp_priv PROPERTIES
 add_library(digidocpp ${BUILD_TYPE}
     ${digidocpp_SRCS}
     ${CMAKE_CURRENT_BINARY_DIR}/digidocpp.conf
-    ${CMAKE_SOURCE_DIR}/etc/878252.p12
+    ${CMAKE_CURRENT_SOURCE_DIR}/../etc/878252.p12
     ${SCHEMA_FILES}
     ${PUBLIC_HEADER}
     ${CRYPTO_HEADER}
     ${XML_HEADER}
-    libdigidocpp.rc
+    #libdigidocpp.rc
     Container.cpp
     ASiContainer.cpp
     ASiC_E.cpp
@@ -215,7 +215,7 @@ set_target_properties(digidocpp PROPERTIES
     VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}
     SOVERSION 1
     PUBLIC_HEADER "${PUBLIC_HEADER}"
-    RESOURCE "${CMAKE_CURRENT_BINARY_DIR}/digidocpp.conf;${CMAKE_SOURCE_DIR}/etc/878252.p12"
+    RESOURCE "${CMAKE_CURRENT_BINARY_DIR}/digidocpp.conf;${CMAKE_CURRENT_SOURCE_DIR}/../etc/878252.p12"
     FRAMEWORK_VERSION 1
     FRAMEWORK "${FRAMEWORK}"
     MACOSX_FRAMEWORK_IDENTIFIER "ee.ria.digidocpp"
@@ -272,7 +272,7 @@ if(WIN32)
     install( DIRECTORY ${PROJECT_BINARY_DIR}/src/ DESTINATION ${CMAKE_INSTALL_LIBDIR} FILES_MATCHING PATTERN "*.pdb" )
 endif()
 
-source_group( "Resources" FILES "${CMAKE_CURRENT_BINARY_DIR}/digidocpp.conf;${CMAKE_SOURCE_DIR}/etc/878252.p12" )
+source_group( "Resources" FILES "${CMAKE_CURRENT_BINARY_DIR}/digidocpp.conf;${CMAKE_CURRENT_SOURCE_DIR}/../etc/878252.p12" )
 source_group( "Resources\\schemas" FILES ${SCHEMA_FILES} )
 
 if( FRAMEWORK )

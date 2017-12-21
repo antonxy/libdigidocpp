@@ -3,15 +3,15 @@ if( Boost_INCLUDE_DIR )
     set_env(RUN_TESTS "" CACHE STRING "Run tests on build")
     set( CMAKE_SKIP_RPATH OFF )
     include_directories(
-        ${CMAKE_SOURCE_DIR}/src
-        ${CMAKE_BINARY_DIR}/src
+        ${CMAKE_CURRENT_SOURCE_DIR}/../src
+        ${CMAKE_CURRENT_BINARY_DIR}/../src
         ${XSD_INCLUDE_DIR}
         ${OPENSSL_INCLUDE_DIR}
         ${XERCESC_INCLUDE_DIR}
         ${Boost_INCLUDE_DIR}
     )
     add_definitions(
-        -DDIGIDOCPPCONF="${CMAKE_SOURCE_DIR}/etc/schema"
+        -DDIGIDOCPPCONF="${CMAKE_CURRENT_SOURCE_DIR}/../etc/schema"
         -DPKCS11_MODULE="${PKCS11_MODULE}"
     )
     if( LIBDIGIDOC_FOUND AND LIBDIGIDOC_LINKED )
