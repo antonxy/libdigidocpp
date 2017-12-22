@@ -1,5 +1,5 @@
-#include "X509CertStore.h"
-#include "X509DirectoryCertStore.h"
+#include "digidocpp/crypto/X509CertStore.h"
+#include "digidocpp/crypto/X509DirectoryCertStore.h"
 
 namespace digidoc{
 

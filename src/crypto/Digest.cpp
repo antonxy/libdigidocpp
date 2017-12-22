@@ -19,7 +19,7 @@
 
 #include "Digest.h"
 
-#include "Conf.h"
+#include "digidocpp/Conf.h"
 #include "crypto/OpenSSLHelpers.h"
 
 #include <openssl/objects.h>

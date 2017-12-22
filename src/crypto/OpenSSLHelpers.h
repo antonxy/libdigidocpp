@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "Exception.h"
+#include "digidocpp/Exception.h"
 #include "log.h"
 
 #include <memory>

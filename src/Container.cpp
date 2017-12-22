@@ -17,15 +17,15 @@
  *
  */
 
-#include "Container.h"
+#include "digidocpp/Container.h"
 
 #include "ASiC_E.h"
 #include "SiVaContainer.h"
-#include "DataFile.h"
-#include "Exception.h"
+#include "digidocpp/DataFile.h"
+#include "digidocpp/Exception.h"
 #include "log.h"
-#include "XmlConf.h"
-#include "crypto/X509CertStore.h"
+#include "digidocpp/XmlConf.h"
+#include "digidocpp/crypto/X509CertStore.h"
 #include "util/File.h"
 
 #include <xercesc/util/XMLString.hpp>

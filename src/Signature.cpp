@@ -17,9 +17,9 @@
  *
  */
 
-#include "Signature.h"
+#include "digidocpp/Signature.h"
 
-#include "crypto/X509Cert.h"
+#include "digidocpp/crypto/X509Cert.h"
 
 using namespace digidoc;
 using namespace std;

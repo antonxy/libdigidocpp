@@ -17,11 +17,11 @@
  *
  */
 
-#include "Conf.h"
+#include "digidocpp/Conf.h"
 
 #include "log.h"
 #include "crypto/Digest.h"
-#include "crypto/X509Cert.h"
+#include "digidocpp/crypto/X509Cert.h"
 #include "util/File.h"
 
 #include "tslcert1.h"

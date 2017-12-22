@@ -17,12 +17,12 @@
  *
  */
 
-#include "PKCS12Signer.h"
+#include "digidocpp/crypto/PKCS12Signer.h"
 
 #include "log.h"
 #include "crypto/Digest.h"
 #include "crypto/OpenSSLHelpers.h"
-#include "crypto/X509Cert.h"
+#include "digidocpp/crypto/X509Cert.h"
 
 #include <openssl/pkcs12.h>
 #include <openssl/x509.h>

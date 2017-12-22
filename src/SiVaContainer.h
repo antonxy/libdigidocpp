@@ -19,9 +19,9 @@
 
 #pragma once
 
-#include "Container.h"
-#include "Signature.h"
-#include "crypto/X509Cert.h"
+#include "digidocpp/Container.h"
+#include "digidocpp/Signature.h"
+#include "digidocpp/crypto/X509Cert.h"
 
 namespace digidoc
 {

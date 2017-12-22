@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "crypto/X509Cert.h"
+#include "digidocpp/crypto/X509Cert.h"
 
 #include <map>
 #include <memory>

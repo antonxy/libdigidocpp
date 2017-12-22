@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "Exports.h"
+#include "digidocpp/Exports.h"
 
 #include <string>
 #include <vector>

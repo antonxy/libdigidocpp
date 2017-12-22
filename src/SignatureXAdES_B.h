@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "Signature.h"
+#include "digidocpp/Signature.h"
 
 #include <map>
 

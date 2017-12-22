@@ -17,14 +17,14 @@
  *
  */
 
-#include "PKCS11Signer.h"
+#include "digidocpp/crypto/PKCS11Signer.h"
 
 #include "pkcs11.h"
 
 #include "log.h"
-#include "Conf.h"
+#include "digidocpp/Conf.h"
 #include "crypto/Digest.h"
-#include "crypto/X509Cert.h"
+#include "digidocpp/crypto/X509Cert.h"
 #include "util/File.h"
 
 #include <algorithm>

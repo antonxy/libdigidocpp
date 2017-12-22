@@ -19,7 +19,7 @@
 
 #include "log.h"
 
-#include "Conf.h"
+#include "digidocpp/Conf.h"
 #include "util/File.h"
 
 #include <fstream>

@@ -24,10 +24,10 @@
 
 #include "SiVaContainer.h"
 
-#include "Conf.h"
+#include "digidocpp/Conf.h"
 #include "DataFile_p.h"
 #include "log.h"
-#include "Signature.h"
+#include "digidocpp/Signature.h"
 #include "crypto/Connect.h"
 #include "crypto/Digest.h"
 #include "util/File.h"

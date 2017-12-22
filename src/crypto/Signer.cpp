@@ -17,13 +17,13 @@
  *
  */
 
-#include "Signer.h"
+#include "digidocpp/crypto/Signer.h"
 
-#include "Conf.h"
+#include "digidocpp/Conf.h"
 #include "log.h"
 #include "crypto/Digest.h"
 #include "crypto/X509Crypto.h"
-#include "crypto/X509Cert.h"
+#include "digidocpp/crypto/X509Cert.h"
 
 using namespace digidoc;
 using namespace std;

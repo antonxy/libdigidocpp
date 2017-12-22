@@ -17,7 +17,7 @@
  *
  */
 
-#include "X509Cert.h"
+#include "digidocpp/crypto/X509Cert.h"
 
 #include "log.h"
 #include "crypto/OpenSSLHelpers.h"

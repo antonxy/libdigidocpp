@@ -17,10 +17,10 @@
  *
  */
 
-#include "XmlConf.h"
+#include "digidocpp/XmlConf.h"
 
 #include "log.h"
-#include "crypto/X509Cert.h"
+#include "digidocpp/crypto/X509Cert.h"
 #include "util/File.h"
 #include "xml/conf.hxx"
 

@@ -19,8 +19,8 @@
 
 #include "Connect.h"
 
-#include "Conf.h"
-#include "Container.h"
+#include "digidocpp/Conf.h"
+#include "digidocpp/Container.h"
 #include "crypto/OpenSSLHelpers.h"
 
 #include <openssl/bio.h>

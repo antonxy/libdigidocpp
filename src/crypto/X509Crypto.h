@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "X509Cert.h"
+#include "digidocpp/crypto/X509Cert.h"
 
 namespace digidoc
 {

@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "DataFile.h"
+#include "digidocpp/DataFile.h"
 
 #include <istream>
 #include <memory>

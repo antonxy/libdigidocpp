@@ -17,9 +17,9 @@
  *
  */
 
-#include "X509DirectoryCertStore.h"
+#include "digidocpp/crypto/X509DirectoryCertStore.h"
 
-#include "Conf.h"
+#include "digidocpp/Conf.h"
 #include "log.h"
 #include "crypto/OpenSSLHelpers.h"
 #include "util/DateTime.h"

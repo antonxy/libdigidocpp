@@ -19,12 +19,12 @@
 
 #include "ASiC_E.h"
 
-#include "Conf.h"
+#include "digidocpp/Conf.h"
 #include "DataFile_p.h"
 #include "SignatureXAdES_B.h"
 #include "log.h"
 #include "crypto/Digest.h"
-#include "crypto/Signer.h"
+#include "digidocpp/crypto/Signer.h"
 #include "util/File.h"
 #include "util/ZipSerialize.h"
 #include "xml/OpenDocument_manifest.hxx"

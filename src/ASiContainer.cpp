@@ -21,7 +21,7 @@
 
 #include "DataFile_p.h"
 #include "log.h"
-#include "Signature.h"
+#include "digidocpp/Signature.h"
 #include "util/File.h"
 #include "util/ZipSerialize.h"
 
