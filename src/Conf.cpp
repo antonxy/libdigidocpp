@@ -218,6 +218,11 @@ string Conf::TSLCache() const
  */
 string Conf::TSLUrl() const { return TSL_URL; }
 
+string Conf::CaFilePath() const
+{
+    return File::confPath() + "ca.pem";
+}
+
 /**
  * Allow expired TSL lists
  */

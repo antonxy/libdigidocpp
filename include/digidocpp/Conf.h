@@ -67,6 +67,8 @@ public:
     virtual int TSLTimeOut() const;
     virtual std::string TSLUrl() const;
 
+    virtual std::string CaFilePath() const;
+
 private:
     DISABLE_COPY(Conf);
 
