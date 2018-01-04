@@ -95,26 +95,9 @@ X509_STORE * X509DirectoryCertStore::setup_store() const
         throw Exception(__FILE__, __LINE__, "Failed to create ca store");
     }
 
-    //DEBUG("Load ca dir");
-    //X509_LOOKUP * lookup = X509_STORE_add_lookup(store.get(), X509_LOOKUP_hash_dir());
-    //if (lookup == NULL) {
-    //    DEBUG("Error lookup");
-    //    throw Exception(__FILE__, __LINE__, "Failed to create ca dir lookup");
-    //}
-    //if (!X509_LOOKUP_add_dir(lookup, ca_directory.c_str(), X509_FILETYPE_PEM)) {
-    //    DEBUG("Error loading directory %s", ca_directory.c_str());
-    //    throw Exception(__FILE__, __LINE__, "Failed to load ca dir");
-    //}
-
     DEBUG("Load ca file");
-    X509_LOOKUP * lookup = X509_STORE_add_lookup(store.get(), X509_LOOKUP_file());
-    if (lookup == NULL) {
-        DEBUG("Error lookup");
-        throw Exception(__FILE__, __LINE__, "Failed to create ca file lookup");
-    }
-    if (!X509_LOOKUP_load_file(lookup, ca_directory.c_str(), X509_FILETYPE_PEM)) {
-        DEBUG("Error loading file %s", ca_directory.c_str());
-        throw Exception(__FILE__, __LINE__, "Failed to load ca file");
+    if (!X509_STORE_load_locations(store.get(), ca_directory.c_str(), NULL)) {
+        throw EXCEPTION(__FILE__, __LINE__, "Failed to load ca file");
     }
 
     ERR_clear_error();
@@ -135,6 +118,11 @@ bool X509DirectoryCertStore::verify(const X509Cert &cert, bool noqscd) const
     SCOPE(X509_STORE_CTX, csc, X509_STORE_CTX_new());
     if(!X509_STORE_CTX_init(csc.get(), store.get(), cert.handle(), nullptr))
         THROW_OPENSSLEXCEPTION("Failed to init X509_STORE_CTX");
+
+    //Enable CRL checking
+    X509_VERIFY_PARAM * param = X509_STORE_CTX_get0_param(csc.get());
+    X509_VERIFY_PARAM_set_flags(param, X509_V_FLAG_CRL_CHECK);
+
     if(X509_verify_cert(csc.get()) > 0) {
         return true;
     }
