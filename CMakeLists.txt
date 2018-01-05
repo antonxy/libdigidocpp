@@ -56,9 +56,9 @@ endif()
 if(NOT MINIZIP_FOUND)
     message(STATUS "MiniZip not found; using bundled copy.")
     if(WIN32)
-        list( APPEND MINIZIP_SRCS minizip/iowin32.c )
+        list( APPEND MINIZIP_SRCS src/minizip/iowin32.c )
     endif()
-    add_library( minizip STATIC minizip/zip.c minizip/unzip.c minizip/ioapi.c ${MINIZIP_SRCS} )
+    add_library( minizip STATIC src/minizip/zip.c src/minizip/unzip.c src/minizip/ioapi.c ${MINIZIP_SRCS} )
     if(CMAKE_COMPILER_IS_GNUCC OR __COMPILER_GNU)
         set_target_properties( minizip PROPERTIES COMPILE_FLAGS "-fPIC -Wno-unused-parameter" )
     endif()
@@ -220,7 +220,7 @@ target_include_directories(digidocpp_priv PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/sr
 
 add_library(digidocpp ${BUILD_TYPE}
     ${digidocpp_SRCS}
-    ${CMAKE_CURRENT_BINARY_DIR}/digidocpp.conf
+    #${CMAKE_CURRENT_BINARY_DIR}/digidocpp.conf
     ${CMAKE_CURRENT_SOURCE_DIR}/etc/878252.p12
     ${SCHEMA_FILES}
     ${PUBLIC_HEADER}
