@@ -22,7 +22,7 @@
 #include "digidocpp/Conf.h"
 #include "log.h"
 #include "crypto/Digest.h"
-#include "crypto/X509Crypto.h"
+#include "digidocpp/crypto/X509Crypto.h"
 #include "digidocpp/crypto/X509Cert.h"
 
 using namespace digidoc;

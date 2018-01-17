@@ -21,7 +21,7 @@
 
 #include "log.h"
 #include "crypto/OpenSSLHelpers.h"
-#include "crypto/X509Crypto.h"
+#include "digidocpp/crypto/X509Crypto.h"
 
 #include <openssl/asn1t.h>
 #include <openssl/pem.h>

@@ -27,7 +27,7 @@
 #include "crypto/OpenSSLHelpers.h"
 #include "digidocpp/crypto/Signer.h"
 #include "digidocpp/crypto/X509CertStore.h"
-#include "crypto/X509Crypto.h"
+#include "digidocpp/crypto/X509Crypto.h"
 #include "util/DateTime.h"
 #include "util/File.h"
 #include "xml/en_31916201v010101.hxx"

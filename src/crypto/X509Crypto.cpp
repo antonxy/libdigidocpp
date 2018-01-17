@@ -17,7 +17,7 @@
  *
  */
 
-#include "X509Crypto.h"
+#include "digidocpp/crypto/X509Crypto.h"
 
 #include "log.h"
 #include "crypto/Digest.h"

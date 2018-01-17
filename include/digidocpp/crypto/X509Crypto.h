@@ -19,6 +19,8 @@
 
 #pragma once
 
+#include "../Exports.h"
+
 #include "digidocpp/crypto/X509Cert.h"
 
 namespace digidoc
@@ -29,7 +31,7 @@ namespace digidoc
      *
      * @author Janari Põld
      */
-    class X509Crypto
+    class EXP_DIGIDOC X509Crypto
     {
 
       public:

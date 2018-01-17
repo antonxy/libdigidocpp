@@ -199,7 +199,6 @@ add_library(digidocpp_priv STATIC
     src/log.cpp
     src/crypto/Connect.cpp
     src/crypto/Digest.cpp
-    src/crypto/X509Crypto.cpp
     src/util/File.cpp
     src/util/DateTime.cpp
     src/xml/AdditionalInformationType.cpp
@@ -240,6 +239,7 @@ add_library(digidocpp ${BUILD_TYPE}
     src/crypto/PKCS11Signer.cpp
     src/crypto/PKCS12Signer.cpp
     src/crypto/Signer.cpp
+    src/crypto/X509Crypto.cpp
     src/crypto/X509Cert.cpp
     src/crypto/X509CertStore.cpp
     src/crypto/X509DirectoryCertStore.cpp
