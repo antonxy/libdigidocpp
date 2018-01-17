@@ -538,7 +538,7 @@ bool X509Cert::isValid(time_t *t) const
     return notBefore < 0 && notAfter > 0;
 }
 
-std::unique_ptr<std::string> X509Cert::extentionByObjectId(const char *obj_id)
+std::unique_ptr<std::string> X509Cert::extensionByObjectId(const char *obj_id) const
 {
     ASN1_OBJECT * role_obj = OBJ_txt2obj(obj_id, 1);
 
