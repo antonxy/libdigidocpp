@@ -220,10 +220,6 @@ X509Cert PKCS11Signer::cert() const
             if(d->f->C_GetAttributeValue(session, objs[j], &attr, 1) != CKR_OK)
                 continue;
             X509Cert x509(value);
-            vector<X509Cert::KeyUsage> usage = x509.keyUsage();
-            if(x509.isCA() || !x509.isValid() ||
-               find(usage.begin(), usage.end(), X509Cert::NonRepudiation) == usage.end())
-                continue;
             certSlotMapping.push_back({ x509, slot, CK_ULONG(j) });
             certificates.push_back(x509);
         }
@@ -282,7 +278,13 @@ string PKCS11Signer::pin(const X509Cert &) const
  */
 X509Cert PKCS11Signer::selectSigningCertificate(const vector<X509Cert> &certificates) const
 {
-    return certificates.front();
+    for (const X509Cert & x509 : certificates) {
+        vector<X509Cert::KeyUsage> usage = x509.keyUsage();
+        if(!x509.isCA() && x509.isValid() &&
+                        find(usage.begin(), usage.end(), X509Cert::NonRepudiation) != usage.end())
+            return x509;
+    }
+    THROW("No acceptable signing certificate found");
 }
 
 /**
