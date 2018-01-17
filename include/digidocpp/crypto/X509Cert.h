@@ -93,6 +93,7 @@ namespace digidoc
           std::vector<std::string> qcStatements() const;
           bool isCA() const;
           bool isValid(time_t *t = 0) const;
+          std::unique_ptr<std::string> extentionByObjectId(const char * obj_id);
 
           X509* handle() const;
           operator std::vector<unsigned char>() const;

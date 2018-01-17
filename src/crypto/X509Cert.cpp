@@ -538,6 +538,27 @@ bool X509Cert::isValid(time_t *t) const
     return notBefore < 0 && notAfter > 0;
 }
 
+std::unique_ptr<std::string> X509Cert::extentionByObjectId(const char *obj_id)
+{
+    ASN1_OBJECT * role_obj = OBJ_txt2obj(obj_id, 1);
+
+    int pos = X509_get_ext_by_OBJ(cert.get(), role_obj, -1);
+    if (pos == -1) {
+        return std::unique_ptr<std::string>();
+    }
+
+    X509_EXTENSION * ext = X509_get_ext(cert.get(), pos);
+    if (ext == NULL) {
+        ASN1_OBJECT_free(role_obj);
+        throw std::runtime_error("could not get ext");
+    }
+    auto res = std::unique_ptr<std::string>(new std::string(reinterpret_cast<const char *>(ext->value->data), ext->value->length));
+
+    ASN1_OBJECT_free(role_obj);
+
+    return res;
+}
+
 /**
  * Negative operator to check if object is valid
  */
