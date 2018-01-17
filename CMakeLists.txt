@@ -67,7 +67,7 @@ if(NOT MINIZIP_FOUND)
     set( MINIZIP_LIBRARIES minizip )
 endif()
 
-set( DIGIDOCPP_CONFIG_DIR "${CMAKE_INSTALL_FULL_SYSCONFDIR}/digidocpp" )
+set( DIGIDOCPP_CONFIG_DIR ${CMAKE_INSTALL_SYSCONFDIR}/digidocpp )
 
 if( USE_KEYCHAIN )
     list( APPEND digidocpp_DEFS USE_KEYCHAIN )
@@ -247,6 +247,7 @@ add_library(digidocpp ${BUILD_TYPE}
 )
 
 target_include_directories(digidocpp PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+target_include_directories(digidocpp PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 
 set_target_properties(digidocpp PROPERTIES
@@ -254,7 +255,7 @@ set_target_properties(digidocpp PROPERTIES
     VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}
     SOVERSION 1
     PUBLIC_HEADER "${PUBLIC_HEADER}"
-    RESOURCE "${CMAKE_CURRENT_BINARY_DIR}/digidocpp.conf;${CMAKE_CURRENT_SOURCE_DIR}/etc/878252.p12"
+#    RESOURCE "${CMAKE_CURRENT_BINARY_DIR}/digidocpp.conf;${CMAKE_CURRENT_SOURCE_DIR}/etc/878252.p12"
     FRAMEWORK_VERSION 1
     FRAMEWORK "${FRAMEWORK}"
     MACOSX_FRAMEWORK_IDENTIFIER "ee.ria.digidocpp"
@@ -279,3 +280,5 @@ install( TARGETS digidocpp
     PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/digidocpp
     FRAMEWORK DESTINATION /Library/Frameworks
 )
+
+install( FILES ${SCHEMA_FILES} DESTINATION ${CMAKE_INSTALL_SYSCONFDIR}/digidocpp/schema )
