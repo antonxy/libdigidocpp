@@ -137,16 +137,21 @@ PKCS11Signer::PKCS11Signer(const string &driver)
 
     DEBUG("PKCS11Signer(driver = '%s')", load.c_str());
     if(load.empty())
-        THROW("Failed to load driver for PKCS #11 engine: %s.", load.c_str());
+        THROW("Failed to load driver for PKCS #11 engine (none given): %s.", load.c_str());
 
     if(!d->load(load))
-        THROW("Failed to load driver for PKCS #11 engine: %s.", load.c_str());
+        THROW("Failed to load driver for PKCS #11 engine (load failed): %s.", load.c_str());
 
-    CK_C_GetFunctionList l = CK_C_GetFunctionList(d->resolve("C_GetFunctionList"));
-    if(!l ||
-        l(&d->f) != CKR_OK ||
-        d->f->C_Initialize(nullptr) != CKR_OK)
-        THROW("Failed to load driver for PKCS #11 engine: %s.", load.c_str());
+		void* f = d->resolve("C_GetFunctionList");
+		if(!f)
+        THROW("Failed to load driver for PKCS #11 engine (0): %s.", load.c_str());
+    CK_C_GetFunctionList l = CK_C_GetFunctionList(f);
+		if(!l)
+        THROW("Failed to load driver for PKCS #11 engine (1): %s.", load.c_str());
+		if(l(&d->f) != CKR_OK)
+        THROW("Failed to load driver for PKCS #11 engine (2): %s.", load.c_str());
+    if(d->f->C_Initialize(nullptr) != CKR_OK)
+        THROW("Failed to load driver for PKCS #11 engine (3): %s.", load.c_str());
 }
 
 /**
@@ -369,20 +374,24 @@ vector<unsigned char> PKCS11Signer::sign(const string &method, const vector<unsi
     // Sign the digest.
     CK_KEY_TYPE keyType = CKK_RSA;
     CK_ATTRIBUTE attribute = { CKA_KEY_TYPE, &keyType, sizeof(keyType) };
-    d->f->C_GetAttributeValue(session, key[d->sign.cert], &attribute, 1);
+    rv = d->f->C_GetAttributeValue(session, key[d->sign.cert], &attribute, 1);
+    if(rv != CKR_OK)
+        THROW("Failed to get cert attribute (%d)", rv);
 
     CK_MECHANISM mech = { keyType == CKK_ECDSA ? CKM_ECDSA : CKM_RSA_PKCS, 0, 0 };
-    if(d->f->C_SignInit(session, &mech, key[d->sign.cert]) != CKR_OK)
-        THROW("Failed to sign digest");
+		rv = d->f->C_SignInit(session, &mech, key[d->sign.cert]);
+    if(rv != CKR_OK)
+        THROW("Failed to sign digest #1 %d", rv);
 
     vector<unsigned char> data = keyType == CKK_RSA ? Digest::addDigestInfo(digest, method) : digest;
     CK_ULONG size = 0;
-    if(d->f->C_Sign(session, data.data(), CK_ULONG(data.size()), 0, &size) != CKR_OK)
-        THROW("Failed to sign digest");
+		rv = d->f->C_Sign(session, data.data(), CK_ULONG(data.size()), 0, &size);
+    if(rv != CKR_OK)
+        THROW("Failed to sign digest #2 %d", rv);
 
     vector<unsigned char> signature(size, 0);
     rv = d->f->C_Sign(session, data.data(), CK_ULONG(data.size()), signature.data(), CK_ULONG_PTR(&size));
     if(rv != CKR_OK)
-        THROW("Failed to sign digest");
+        THROW("Failed to sign digest #3 %d", rv);
     return signature;
 }
