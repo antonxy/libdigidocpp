@@ -552,7 +552,10 @@ std::unique_ptr<std::string> X509Cert::extensionByObjectId(const char *obj_id) c
         ASN1_OBJECT_free(role_obj);
         throw std::runtime_error("could not get ext");
     }
-    auto res = std::unique_ptr<std::string>(new std::string(reinterpret_cast<const char *>(ext->value->data), ext->value->length));
+
+    ASN1_OCTET_STRING * value = X509_EXTENSION_get_data(ext);
+    auto res = std::unique_ptr<std::string>(new std::string(reinterpret_cast<const char *>(ASN1_STRING_data(value)), ASN1_STRING_length(value)));
+
 
     ASN1_OBJECT_free(role_obj);
 

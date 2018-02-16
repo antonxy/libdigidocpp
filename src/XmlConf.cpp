@@ -18,6 +18,7 @@
  */
 
 #include "digidocpp/XmlConf.h"
+#include "digidocpp/WStringHelpers.h"
 
 #include "log.h"
 #include "digidocpp/crypto/X509Cert.h"
@@ -295,7 +296,7 @@ void XmlConf::Private::setUserConf(XmlConfParam<A> &param, const A &defined, con
     string path = File::directory(USER_CONF_LOC);
     if (!File::directoryExists(path))
         File::createDirectory(path);
-    ofstream ofs(File::encodeName(USER_CONF_LOC).c_str());
+    ofstream ofs(ws2s(File::encodeName(USER_CONF_LOC)).c_str());
     if (ofs.fail())
         THROW("Failed to open configuration: %s", USER_CONF_LOC.c_str());
     NamespaceInfomap map;

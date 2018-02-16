@@ -136,7 +136,7 @@ XSD_SCHEMA( xsd_SRCS XML_HEADER ${XML_DIR} ${SCHEMA_DIR}/ts_119612v020101_sie_xs
     --namespace-map http://uri.etsi.org/02231/v2\#=digidoc::tsl
     --namespace-map http://uri.etsi.org/TrstSvc/SvcInfoExt/eSigDir-1999-93-EC-TrustedList/\#=digidoc::tsl
     --namespace-map http://uri.etsi.org/01903/v1.3.2\#=digidoc::xades )
-if( WIN32 )
+	if( CMAKE_HOST_SYSTEM_NAME STREQUAL "Windows" )
     add_executable( embedfile embedfile.cpp )
     add_custom_command( OUTPUT tslcert1.h tslcert2.h tslcert3.h tslcert4.h
         COMMAND $<TARGET_FILE:embedfile> ${TSL_CERT1} tslcert1_crt tslcert1.h
@@ -176,9 +176,9 @@ set( SCHEMA_FILES
 )
 
 if( WIN32 )
-    list( APPEND digidocpp_SRCS crypto/WinSigner.cpp )
-    list( APPEND CRYPTO_HEADER crypto/WinSigner.h )
-    list( APPEND TARGET_LIBRARIES Crypt32 cryptui ncrypt Ws2_32 )
+#    list( APPEND digidocpp_SRCS src/crypto/WinSigner.cpp )
+#    list( APPEND CRYPTO_HEADER include/digidocpp/crypto/WinSigner.h )
+#    list( APPEND TARGET_LIBRARIES Crypt32 cryptui ncrypt Ws2_32 )
 elseif( APPLE )
     list( APPEND TARGET_LIBRARIES "-framework CoreFoundation" )
 endif()
@@ -194,28 +194,27 @@ include_directories(
     ${MINIZIP_INCLUDE_DIR}
 )
 
-add_library(digidocpp_priv STATIC
-    ${xsd_SRCS}
-    src/log.cpp
-    src/crypto/Connect.cpp
-    src/crypto/Digest.cpp
-    src/util/File.cpp
-    src/util/DateTime.cpp
-    src/xml/AdditionalInformationType.cpp
-    src/xml/AnyType.cpp
-    src/xml/ExtensionType.cpp
-    src/xml/ObjectType.cpp
-    src/xml/SecureDOMParser.cpp
-    src/xml/UnsignedSignaturePropertiesType.cpp
-    src/xml/URIResolver.cpp
-)
-
-set_target_properties(digidocpp_priv PROPERTIES
-    COMPILE_DEFINITIONS "DIGIDOCPP_CONFIG_DIR=\"${DIGIDOCPP_CONFIG_DIR}\""
-    POSITION_INDEPENDENT_CODE YES
-)
-target_include_directories(digidocpp_priv PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
-target_include_directories(digidocpp_priv PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+#add_library(digidocpp_priv STATIC
+#    ${xsd_SRCS}
+#    src/log.cpp
+#    src/crypto/Digest.cpp
+#    src/util/File.cpp
+#    src/util/DateTime.cpp
+#    src/xml/AdditionalInformationType.cpp
+#    src/xml/AnyType.cpp
+#    src/xml/ExtensionType.cpp
+#    src/xml/ObjectType.cpp
+#    src/xml/SecureDOMParser.cpp
+#    src/xml/UnsignedSignaturePropertiesType.cpp
+#    src/xml/URIResolver.cpp
+#)
+#
+#set_target_properties(digidocpp_priv PROPERTIES
+#    COMPILE_DEFINITIONS "DIGIDOCPP_CONFIG_DIR=\"${DIGIDOCPP_CONFIG_DIR}\""
+#    POSITION_INDEPENDENT_CODE YES
+#)
+#target_include_directories(digidocpp_priv PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+#target_include_directories(digidocpp_priv PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 add_library(digidocpp ${BUILD_TYPE}
     ${digidocpp_SRCS}
@@ -229,7 +228,6 @@ add_library(digidocpp ${BUILD_TYPE}
     src/Container.cpp
     src/ASiContainer.cpp
     src/ASiC_E.cpp
-    src/SiVaContainer.cpp
     src/Conf.cpp
     src/XmlConf.cpp
     src/DataFile.cpp
@@ -244,6 +242,19 @@ add_library(digidocpp ${BUILD_TYPE}
     src/crypto/X509CertStore.cpp
     src/crypto/X509DirectoryCertStore.cpp
     src/util/ZipSerialize.cpp
+
+    ${xsd_SRCS}
+    src/log.cpp
+    src/crypto/Digest.cpp
+    src/util/File.cpp
+    src/util/DateTime.cpp
+    src/xml/AdditionalInformationType.cpp
+    src/xml/AnyType.cpp
+    src/xml/ExtensionType.cpp
+    src/xml/ObjectType.cpp
+    src/xml/SecureDOMParser.cpp
+    src/xml/UnsignedSignaturePropertiesType.cpp
+    src/xml/URIResolver.cpp
 )
 
 target_include_directories(digidocpp PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
@@ -251,7 +262,7 @@ target_include_directories(digidocpp PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 
 set_target_properties(digidocpp PROPERTIES
-    COMPILE_DEFINITIONS "PKCS11_MODULE=\"${PKCS11_MODULE}\";TSA_URL=\"${TSA_URL}\";TSL_URL=\"${TSL_URL}\";SIVA_URL=\"${SIVA_URL}\";${digidocpp_DEFS}"
+    COMPILE_DEFINITIONS "PKCS11_MODULE=\"${PKCS11_MODULE}\";TSA_URL=\"${TSA_URL}\";TSL_URL=\"${TSL_URL}\";SIVA_URL=\"${SIVA_URL}\";${digidocpp_DEFS};DIGIDOCPP_CONFIG_DIR=\"${DIGIDOCPP_CONFIG_DIR}\""
     VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}
     SOVERSION 1
     PUBLIC_HEADER "${PUBLIC_HEADER}"
@@ -260,15 +271,16 @@ set_target_properties(digidocpp PROPERTIES
     FRAMEWORK "${FRAMEWORK}"
     MACOSX_FRAMEWORK_IDENTIFIER "ee.ria.digidocpp"
     MACOSX_RPATH YES
+    POSITION_INDEPENDENT_CODE YES
 )
 
-target_link_libraries(digidocpp digidocpp_priv
+target_link_libraries(digidocpp #digidocpp_priv
     ${CMAKE_DL_LIBS}
-    ${MINIZIP_LIBRARIES}
-    ${XERCESC_LIBRARIES}
     ${XMLSECURITYC_LIBRARIES}
     ${TARGET_LIBRARIES}
+    ${XERCESC_LIBRARIES}
     ${OPENSSL_LIBRARIES}
+    ${MINIZIP_LIBRARIES}
     ${ZLIB_LIBRARIES}
 )
 

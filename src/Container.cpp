@@ -20,9 +20,9 @@
 #include "digidocpp/Container.h"
 
 #include "ASiC_E.h"
-#include "SiVaContainer.h"
 #include "digidocpp/DataFile.h"
 #include "digidocpp/Exception.h"
+#include "digidocpp/Signature.h"
 #include "log.h"
 #include "digidocpp/XmlConf.h"
 #include "digidocpp/crypto/X509CertStore.h"
@@ -119,7 +119,6 @@ void digidoc::initialize(const string &appInfo, initCallBack callBack)
     if(!Conf::instance())
         Conf::init(new XmlConfCurrent);
 
-    Container::addContainerImplementation<SiVaContainer>();
 
     if(callBack)
     {

@@ -18,6 +18,7 @@
  */
 
 #include "DataFile_p.h"
+#include "digidocpp/WStringHelpers.h"
 
 #include "log.h"
 #include "crypto/Digest.h"
@@ -123,7 +124,7 @@ void DataFilePrivate::calcDigest(Digest *digest) const
 
 void DataFilePrivate::saveAs(const string& path) const
 {
-    ofstream ofs(File::encodeName(path).c_str(), ofstream::binary);
+    ofstream ofs(ws2s(File::encodeName(path)).c_str(), ofstream::binary);
     saveAs(ofs);
     ofs.close();
 }

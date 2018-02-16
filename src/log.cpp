@@ -20,6 +20,7 @@
 #include "log.h"
 
 #include "digidocpp/Conf.h"
+#include "digidocpp/WStringHelpers.h"
 #include "util/File.h"
 
 #include <fstream>
@@ -78,7 +79,7 @@ void Log::out(LogType type, const char *file, unsigned int line, const char *for
     fstream f;
     if(!conf->logFile().empty())
     {
-        f.open(File::encodeName(conf->logFile()).c_str(), fstream::out|fstream::app);
+        f.open(ws2s(File::encodeName(conf->logFile())).c_str(), fstream::out|fstream::app);
         o = &f;
     }
     switch(type)
@@ -106,7 +107,7 @@ void Log::dbgPrintfMemImpl(const char *msg, const void *ptr, size_t size, const 
     fstream f;
     if(!conf->logFile().empty())
     {
-        f.open(File::encodeName(conf->logFile()).c_str(), fstream::out|fstream::app);
+        f.open(ws2s(File::encodeName(conf->logFile())).c_str(), fstream::out|fstream::app);
         o = &f;
     }
 

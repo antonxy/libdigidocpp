@@ -22,6 +22,7 @@
 #include "DataFile_p.h"
 #include "log.h"
 #include "digidocpp/Signature.h"
+#include "digidocpp/WStringHelpers.h"
 #include "util/File.h"
 #include "util/ZipSerialize.h"
 
@@ -164,7 +165,7 @@ iostream* ASiContainer::dataStream(const string &path, const ZipSerialize &z) co
 {
     iostream *data = nullptr;
     if(d->properties[path].size > MAX_MEM_FILE)
-        data = new fstream(File::encodeName(File::tempFileName()).c_str(), fstream::in|fstream::out|fstream::binary|fstream::trunc);
+        data = new fstream(ws2s(File::encodeName(File::tempFileName())).c_str(), fstream::in|fstream::out|fstream::binary|fstream::trunc);
     else
         data = new stringstream;
     
@@ -202,11 +203,11 @@ void ASiContainer::addDataFile(const string &path, const string &mediaType)
     istream *is;
     if(prop.size > MAX_MEM_FILE)
     {
-        is = new ifstream(File::encodeName(path).c_str(), ifstream::binary);
+        is = new ifstream(ws2s(File::encodeName(path)).c_str(), ifstream::binary);
     }
     else
     {
-        ifstream file(File::encodeName(path).c_str(), ifstream::binary);
+        ifstream file(ws2s(File::encodeName(path)).c_str(), ifstream::binary);
         stringstream *data = new stringstream;
         if(file)
             *data << file.rdbuf();
