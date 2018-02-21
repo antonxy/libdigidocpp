@@ -313,7 +313,7 @@ string X509Cert::serial() const
     SCOPE2(BIGNUM, bn, ASN1_INTEGER_to_BN(X509_get_serialNumber(cert.get()), 0), BN_free);
     if(!!bn)
     {
-        char *str = BN_bn2dec(bn.get());
+        char *str = BN_bn2hex(bn.get());
         if(str)
             serial = str;
         OPENSSL_free(str);
