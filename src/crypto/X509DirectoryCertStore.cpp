@@ -97,7 +97,7 @@ X509_STORE * X509DirectoryCertStore::setup_store() const
 
     DEBUG("Load ca file");
     if (!X509_STORE_load_locations(store.get(), ca_directory.c_str(), NULL)) {
-        throw EXCEPTION(__FILE__, __LINE__, "Failed to load ca file");
+        throw Exception(__FILE__, __LINE__, "Failed to load ca file");
     }
 
     ERR_clear_error();
