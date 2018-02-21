@@ -3,6 +3,9 @@ project(libdigidocpp VERSION 3.13.2)
 if(POLICY CMP0063)
     cmake_policy(SET CMP0063 NEW)
 endif()
+if(POLICY CMP0071)
+	cmake_policy(SET CMP0071 OLD) # Exclude generated files from automoc
+endif()
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules")
 
@@ -136,7 +139,7 @@ XSD_SCHEMA( xsd_SRCS XML_HEADER ${XML_DIR} ${SCHEMA_DIR}/ts_119612v020101_sie_xs
     --namespace-map http://uri.etsi.org/02231/v2\#=digidoc::tsl
     --namespace-map http://uri.etsi.org/TrstSvc/SvcInfoExt/eSigDir-1999-93-EC-TrustedList/\#=digidoc::tsl
     --namespace-map http://uri.etsi.org/01903/v1.3.2\#=digidoc::xades )
-	if( CMAKE_HOST_SYSTEM_NAME STREQUAL "Windows" )
+if( CMAKE_HOST_SYSTEM_NAME STREQUAL "Windows" )
     add_executable( embedfile embedfile.cpp )
     add_custom_command( OUTPUT tslcert1.h tslcert2.h tslcert3.h tslcert4.h
         COMMAND $<TARGET_FILE:embedfile> ${TSL_CERT1} tslcert1_crt tslcert1.h
