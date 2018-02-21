@@ -86,6 +86,7 @@ namespace digidoc
           ~X509Cert();
 
           std::string serial() const;
+          std::string serial_hex() const;
           std::string issuerName(const std::string &obj = std::string()) const;
           std::string subjectName(const std::string &obj = std::string()) const;
           std::vector<KeyUsage> keyUsage() const;

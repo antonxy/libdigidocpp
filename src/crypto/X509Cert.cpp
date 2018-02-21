@@ -313,6 +313,31 @@ string X509Cert::serial() const
     SCOPE2(BIGNUM, bn, ASN1_INTEGER_to_BN(X509_get_serialNumber(cert.get()), 0), BN_free);
     if(!!bn)
     {
+        char *str = BN_bn2dec(bn.get());
+        if(str)
+            serial = str;
+        OPENSSL_free(str);
+    }
+
+    if(serial.empty())
+        THROW_OPENSSLEXCEPTION("Failed to read certificate serial number from X.509 certificate");
+
+    return serial;
+}
+
+/**
+ * Returns X.509 certificate serial number.
+ *
+ * @throws Exception exception is thrown if the serial is incorrect.
+ */
+string X509Cert::serial_hex() const
+{
+    string serial;
+    if(!cert)
+        return serial;
+    SCOPE2(BIGNUM, bn, ASN1_INTEGER_to_BN(X509_get_serialNumber(cert.get()), 0), BN_free);
+    if(!!bn)
+    {
         char *str = BN_bn2hex(bn.get());
         if(str)
             serial = str;
