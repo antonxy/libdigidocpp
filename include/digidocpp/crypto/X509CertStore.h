@@ -38,6 +38,6 @@ namespace digidoc
 
           virtual std::vector<X509Cert> certs(const std::set<std::string> &type) const = 0;
           virtual X509Cert findIssuer(const X509Cert &cert, const std::set<std::string> &type) const = 0;
-          virtual bool verify(const X509Cert &cert, bool qscd) const = 0;
+          virtual bool verify(const X509Cert &cert, bool qscd, time_t validation_time = 0) const = 0;
     };
 }

@@ -35,7 +35,7 @@ namespace digidoc
           X509DirectoryCertStore(std::string ca_directory);
           std::vector<X509Cert> certs(const std::set<std::string> &type) const;
           X509Cert findIssuer(const X509Cert &cert, const std::set<std::string> &type) const;
-          bool verify(const X509Cert &cert, bool qscd) const;
+          bool verify(const X509Cert &cert, bool qscd, time_t validation_time = 0) const;
       private:
           std::string ca_directory;
           X509_STORE * setup_store() const;

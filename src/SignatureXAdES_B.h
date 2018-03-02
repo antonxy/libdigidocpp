@@ -108,7 +108,7 @@ namespace digidoc
 
           // offline checks
           void checkSignatureValue() const;
-          void checkSigningCertificate(bool noqscd) const;
+          void checkSigningCertificate(bool noqscd, time_t validation_time) const;
           void checkKeyInfo() const;
     };
 }

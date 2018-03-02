@@ -108,11 +108,12 @@ X509_STORE * X509DirectoryCertStore::setup_store() const
  * Check if X509Cert is signed by trusted issuer
  * @throw Exception if error
  */
-bool X509DirectoryCertStore::verify(const X509Cert &cert, bool noqscd) const
+bool X509DirectoryCertStore::verify(const X509Cert &cert, bool noqscd, time_t validation_time) const
 {
     if (!noqscd) {
         throw Exception(__FILE__, __LINE__, "qscd not imlemented");
     }
+	DEBUG("Verify certificate in cert store");
     SCOPE(X509_STORE, store, setup_store());
 
     SCOPE(X509_STORE_CTX, csc, X509_STORE_CTX_new());
@@ -122,12 +123,17 @@ bool X509DirectoryCertStore::verify(const X509Cert &cert, bool noqscd) const
     //Enable CRL checking
     X509_VERIFY_PARAM * param = X509_STORE_CTX_get0_param(csc.get());
     X509_VERIFY_PARAM_set_flags(param, X509_V_FLAG_CRL_CHECK);
+	if (validation_time != 0) {
+		DEBUG("Using validation time %d", validation_time);
+		X509_VERIFY_PARAM_set_time(param, validation_time);
+	}
 
     if(X509_verify_cert(csc.get()) > 0) {
         return true;
     }
 
     int err = X509_STORE_CTX_get_error(csc.get());
+	DEBUG("Invalid: %s", X509_verify_cert_error_string(err));
     Exception e(__FILE__, __LINE__, X509_verify_cert_error_string(err), OpenSSLException());
     switch(err)
     {

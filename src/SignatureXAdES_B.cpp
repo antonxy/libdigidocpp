@@ -649,7 +649,15 @@ void SignatureXAdES_B::validate(const string &policy) const
     try { checkSignatureValue(); }
     catch(const Exception& e) { exception.addCause(e); }
 
-    try { checkSigningCertificate(policy == POLv1); }
+	//Use claimed signing time to check certificate validity
+	//This is probably not how you should do it but a compromise for offline usage
+	const SignedSignaturePropertiesType::SigningTimeOptional& sigTimeOpt =
+		getSignedSignatureProperties().signingTime();
+	if ( !sigTimeOpt.present() )
+		EXCEPTION_ADD(exception, "Signature contains no signing time");
+    time_t claimedSigningTime = util::date::xsd2time_t(sigTimeOpt.get());
+
+    try { checkSigningCertificate(policy == POLv1, claimedSigningTime); }
     catch(const Exception& e) { exception.addCause(e); }
 
     if(!exception.causes().empty())
@@ -735,7 +743,7 @@ void SignatureXAdES_B::checkKeyInfo() const
  * Check if signing certificate was issued by trusted party.
  * @throws Exception on a problem with signing certificate
  */
-void SignatureXAdES_B::checkSigningCertificate(bool noqscd) const
+void SignatureXAdES_B::checkSigningCertificate(bool noqscd, time_t validation_time) const
 {
     try
     {
@@ -743,7 +751,7 @@ void SignatureXAdES_B::checkSigningCertificate(bool noqscd) const
         vector<X509Cert::KeyUsage> usage = signingCert.keyUsage();
         if(find(usage.begin(), usage.end(), X509Cert::NonRepudiation) == usage.end())
             THROW("Signing certificate does not contain NonRepudiation key usage flag");
-        if(!X509CertStore::instance()->verify(signingCert, noqscd))
+        if(!X509CertStore::instance()->verify(signingCert, noqscd, validation_time))
             THROW("Unable to verify signing certificate");
     }
     catch(const Exception &e)
