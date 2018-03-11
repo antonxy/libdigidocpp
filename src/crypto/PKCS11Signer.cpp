@@ -233,12 +233,12 @@ X509Cert PKCS11Signer::cert() const
         d->f->C_CloseSession(session);
 
     if(certificates.empty())
-        THROW("No certificates found.");
+        THROW("No certificates found on token.");
 
     // Let the application select the signing certificate.
     X509Cert selectedCert = selectSigningCertificate(certificates);
     if(!selectedCert)
-        THROW("No certificate selected.");
+        THROW("No certificate selected on token.");
 
     // Find the corresponding slot and PKCS11 certificate struct.
     for(const PKCS11SignerPrivate::SignSlot &slot: certSlotMapping)
