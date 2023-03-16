@@ -360,8 +360,20 @@ vector<unsigned char> PKCS11Signer::sign(const string &method, const vector<unsi
             e.setCode(Exception::PINLocked);
             throw e;
         }
+        case CKR_PIN_LEN_RANGE:
+        {
+            Exception e(EXCEPTION_PARAMS("PIN Incorrect (invalid length)"));
+            e.setCode(Exception::PINIncorrect);
+            throw e;
+        }
+        case CKR_PIN_EXPIRED:
+        {
+            Exception e(EXCEPTION_PARAMS("PIN Expired"));
+            e.setCode(Exception::PINLocked);
+            throw e;
+        }
         default:
-            Exception e(EXCEPTION_PARAMS("Failed to login to token '%s': %ul", token.label, rv));
+            Exception e(EXCEPTION_PARAMS("Failed to login to token. Error Code: %u", rv));
             e.setCode(Exception::PINFailed);
             throw e;
         }
