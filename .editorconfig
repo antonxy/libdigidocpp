@@ -1,0 +1,4 @@
+[*.{cpp,hpp,c,h,cxx,hxx}]
+indent_style = space
+indent_size = 4
+trim_trailing_whitespace = true
