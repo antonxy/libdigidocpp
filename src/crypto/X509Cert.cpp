@@ -356,6 +356,31 @@ string X509Cert::serial() const
 }
 
 /**
+ * Returns X.509 certificate serial number formatted as hex.
+ *
+ * @throws Exception exception is thrown if the serial is incorrect.
+ */
+string X509Cert::serial_hex() const
+{
+    string serial;
+    if(!cert)
+        return serial;
+    auto bn = make_unique_ptr<BN_free>(ASN1_INTEGER_to_BN(X509_get_serialNumber(cert.get()), nullptr));
+    if(bn)
+    {
+        char *str = BN_bn2hex(bn.get());
+        if(str)
+            serial = str;
+        OPENSSL_free(str);
+    }
+
+    if(serial.empty())
+        THROW_OPENSSLEXCEPTION("Failed to read certificate serial number from X.509 certificate");
+
+    return serial;
+}
+
+/**
  * Returns issuer name as an RFC 2253 string.
  *
  * @param obj If empty, returns the full issuer DN. If a short name (e.g., "CN", "O", "C") is provided,
@@ -565,6 +590,30 @@ bool X509Cert::isValid(time_t *t) const
     if(notBefore == 0 || notAfter == 0)
         THROW_OPENSSLEXCEPTION("Failed to validate cert");
     return notBefore < 0 && notAfter > 0;
+}
+
+std::unique_ptr<std::string> X509Cert::extensionByObjectId(const char *obj_id) const
+{
+    ASN1_OBJECT * role_obj = OBJ_txt2obj(obj_id, 1);
+
+    int pos = X509_get_ext_by_OBJ(cert.get(), role_obj, -1);
+    if (pos == -1) {
+        return std::unique_ptr<std::string>();
+    }
+
+    X509_EXTENSION * ext = X509_get_ext(cert.get(), pos);
+    if (ext == NULL) {
+        ASN1_OBJECT_free(role_obj);
+        throw std::runtime_error("could not get ext");
+    }
+
+    ASN1_OCTET_STRING * value = X509_EXTENSION_get_data(ext);
+    auto res = std::unique_ptr<std::string>(new std::string(reinterpret_cast<const char *>(ASN1_STRING_data(value)), ASN1_STRING_length(value)));
+
+
+    ASN1_OBJECT_free(role_obj);
+
+    return res;
 }
 
 /**

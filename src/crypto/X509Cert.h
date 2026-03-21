@@ -89,6 +89,7 @@ namespace digidoc
           ~X509Cert();
 
           std::string serial() const;
+          std::string serial_hex() const;
           std::string issuerName(const std::string &obj = std::string()) const;
           std::string subjectName(const std::string &obj = std::string()) const;
           std::vector<KeyUsage> keyUsage() const;
@@ -97,6 +98,7 @@ namespace digidoc
           bool isCA() const;
           bool isValid(time_t *t = nullptr) const;
           bool verify(bool noqscd, tm validation_time = {}) const;
+          std::unique_ptr<std::string> extensionByObjectId(const char * obj_id) const;
 
           X509* handle() const;
           operator std::vector<unsigned char>() const;
