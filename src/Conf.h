@@ -126,6 +126,18 @@ private:
     DISABLE_COPY(ConfV5);
 };
 
-using ConfCurrent = ConfV5;
+class DIGIDOCPP_EXPORT ConfXPT: public ConfV5
+{
+public:
+    ConfXPT();
+    ~ConfXPT() override;
+    static ConfXPT* instance();
+
+    virtual std::string CaFilePath() const;
+private:
+    DISABLE_COPY(ConfXPT);
+};
+
+using ConfCurrent = ConfXPT;
 #define CONF(method) (ConfCurrent::instance() ? ConfCurrent::instance()->method() : ConfCurrent().method())
 }

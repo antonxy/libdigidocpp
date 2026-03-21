@@ -363,3 +363,17 @@ vector<X509Cert> ConfV5::TSCerts() const
 {
     return {};
 }
+
+ConfXPT::ConfXPT() = default;
+
+ConfXPT::~ConfXPT() = default;
+
+/**
+ * @copydoc digidoc::Conf::instance()
+ */
+ConfXPT* ConfXPT::instance() { return dynamic_cast<ConfXPT*>(Conf::instance()); }
+
+string ConfXPT::CaFilePath() const
+{
+    return File::confPath() + "ca.pem";
+}
