@@ -36,7 +36,7 @@ namespace digidoc
     /**
      * X.509 certificate store interface.
      */
-    class X509CertStore
+    class DIGIDOCPP_EXPORT X509CertStore
     {
     public:
         using Type = std::set<std::string_view>;
