@@ -547,7 +547,11 @@ void SignatureXAdES_B::validate(const string &policy) const
         try { checkKeyInfo(); }
         catch(const Exception& e) { exception.addCause(e); }
 
-        try { checkSigningCertificate(policy == POLv1); }
+        try {
+            bool noqscd = policy == POLv1 || policy == POL_XPT;
+            tm validation_time = policy == POL_XPT ? util::date::from_string(claimedSigningTime()) : tm{};
+            checkSigningCertificate(noqscd, validation_time);
+        }
         catch(const Exception& e) { exception.addCause(e); }
     } catch(const Exception &e) {
         exception.addCause(e);
@@ -624,9 +628,11 @@ void SignatureXAdES_B::checkKeyInfo() const
 
 /**
  * Check if signing certificate was issued by trusted party.
+ * @param noqscd If true, QSCD requirements are not checked.
+ * @param validation_time Time at which to validate the certificate. If empty, uses certificate's notBefore.
  * @throws Exception on a problem with signing certificate
  */
-void SignatureXAdES_B::checkSigningCertificate(bool noqscd) const
+void SignatureXAdES_B::checkSigningCertificate(bool noqscd, tm validation_time) const
 {
     try
     {
@@ -634,7 +640,7 @@ void SignatureXAdES_B::checkSigningCertificate(bool noqscd) const
         vector<X509Cert::KeyUsage> usage = signingCert.keyUsage();
         if(!contains(usage, X509Cert::NonRepudiation))
             THROW("Signing certificate does not contain NonRepudiation key usage flag");
-        if(!signingCertificate().verify(noqscd))
+        if(!signingCertificate().verify(noqscd, validation_time))
             THROW("Unable to verify signing certificate");
     }
     catch(const Exception &e)

@@ -30,6 +30,7 @@ namespace digidoc
         {
         public:
             static struct tm gmtime(time_t t);
+            static struct tm from_string(const std::string &time);
             static bool is_empty(const tm &t);
             static time_t mkgmtime(tm &t);
             static std::string to_string(time_t t);

@@ -38,6 +38,27 @@ struct tm date::gmtime(time_t t)
     return tm;
 }
 
+struct tm date::from_string(const string &time)
+{
+    tm tm {};
+    if(time.empty())
+        return tm;
+    // Parse ISO 8601 format: YYYY-MM-DDTHH:MM:SSZ
+    int year = 0, mon = 0, mday = 0, hour = 0, min = 0, sec = 0;
+    if(sscanf(time.c_str(), "%d-%d-%dT%d:%d:%d",
+        &year, &mon, &mday, &hour, &min, &sec) == 6)
+    {
+        tm.tm_year = year - 1900;
+        tm.tm_mon = mon - 1;
+        tm.tm_mday = mday;
+        tm.tm_hour = hour;
+        tm.tm_min = min;
+        tm.tm_sec = sec;
+    }
+    // Returns zeroed tm if parsing fails (consistent with is_empty() check)
+    return tm;
+}
+
 bool date::is_empty(const tm &t)
 {
     return t.tm_sec == 0 &&

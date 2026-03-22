@@ -67,6 +67,7 @@ namespace digidoc
 
           static const std::string POLv1;
           static const std::string POLv2;
+          static const std::string POL_XPT;
 
           virtual ~Signature();
 

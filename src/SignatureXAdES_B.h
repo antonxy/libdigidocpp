@@ -23,6 +23,7 @@
 
 #include "XMLDocument.h"
 
+#include <ctime>
 #include <map>
 
 namespace digidoc
@@ -116,7 +117,7 @@ namespace digidoc
           constexpr XMLNode V1orV2(std::string_view v1, std::string_view v2) const noexcept;
 
           // offline checks
-          void checkSigningCertificate(bool noqscd) const;
+          void checkSigningCertificate(bool noqscd, tm validation_time = {}) const;
           void checkKeyInfo() const;
     };
 }

@@ -62,6 +62,15 @@ const string Signature::POLv1 = "POLv1";
 const string Signature::POLv2 = "POLv2";
 
 /**
+ * XPT offline validation policy based on POLv1.
+ * Validates certificates using the claimed signing time instead of requiring
+ * a timestamp. This is a compromise for offline usage scenarios.
+ *
+ * @see validate(const std::string &policy) const
+ */
+const string Signature::POL_XPT = "POL_XPT";
+
+/**
  * Creates an new empty signature.
  */
 Signature::Signature() = default;
