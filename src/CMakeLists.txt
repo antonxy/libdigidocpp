@@ -121,7 +121,7 @@ add_library(digidocpp
     crypto/Signer.cpp
     crypto/TS.cpp
     crypto/X509Cert.cpp
-    crypto/X509CertStore.cpp
+    crypto/X509DirectoryCertStore.cpp
     $<$<PLATFORM_ID:Windows>:crypto/WinSigner.cpp>
     util/ZipSerialize.cpp
 )
