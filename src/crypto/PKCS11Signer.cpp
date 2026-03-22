@@ -254,7 +254,10 @@ X509Cert PKCS11Signer::cert() const
             CK_OBJECT_HANDLE obj: session.findObject(CKO_CERTIFICATE))
         {
             X509Cert x509(session.attribute(obj, CKA_VALUE));
-            if(x509.isCA() || !x509.isValid() || !contains(x509.keyUsage(), X509Cert::NonRepudiation))
+            // Original:
+            // if(x509.isCA() || !x509.isValid() || !contains(x509.keyUsage(), X509Cert::NonRepudiation))
+            // We also need access to the authentication certificate
+            if(x509.isCA() || !x509.isValid())
                 continue;
             vector<CK_BYTE> id = session.attribute(obj, CKA_ID);
             if(session.findObject(CKO_PUBLIC_KEY, id).empty())
@@ -325,7 +328,17 @@ string PKCS11Signer::pin(const X509Cert & /*certificate*/) const
  */
 X509Cert PKCS11Signer::selectSigningCertificate(const vector<X509Cert> &certificates) const
 {
-    return certificates.front();
+    // Original:
+    // return certificates.front();
+    // Since we select all certificates in cert above, we have to pick out the NonRepudiation one here by default
+    // AuthenticationSigner overrides this to pick the authentication certificate
+    for (const X509Cert & x509 : certificates) {
+        vector<X509Cert::KeyUsage> usage = x509.keyUsage();
+        if(!x509.isCA() && x509.isValid() &&
+                        find(usage.begin(), usage.end(), X509Cert::NonRepudiation) != usage.end())
+            return x509;
+    }
+    THROW("No acceptable signing certificate found");
 }
 
 /**
