@@ -109,6 +109,15 @@ void SignatureXAdES_LT::validate(const string &policy) const
             exception.addCause(ex);
     }
 
+    // BES/EPES signatures don't have UnsignedProperties, skip LT-level validation
+    if(profile().find(ASiC_E::ASIC_TS_PROFILE) == string::npos &&
+       profile().find(ASiC_E::ASIC_TM_PROFILE) == string::npos)
+    {
+        if(!exception.causes().empty())
+            throw exception;
+        return;
+    }
+
     try {
         auto revocationValues = unsignedSignatureProperties()/"RevocationValues";
         if(!revocationValues)
