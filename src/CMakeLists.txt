@@ -58,8 +58,11 @@ if(WIN32)
         TARGET_NAME="$<TARGET_PROPERTY:NAME>"
         $<$<STREQUAL:$<TARGET_PROPERTY:TYPE>,EXECUTABLE>:APP>
     )
+    # Only compile resource files for MSVC - windres has issues with generator expressions
+    if(MSVC)
+        target_sources(digidocpp_ver INTERFACE libdigidocpp.rc)
+    endif()
 endif()
-target_sources(digidocpp_ver INTERFACE libdigidocpp.rc)
 
 add_library(digidocpp_util STATIC
     util/File.cpp
@@ -122,7 +125,7 @@ add_library(digidocpp
     crypto/TS.cpp
     crypto/X509Cert.cpp
     crypto/X509DirectoryCertStore.cpp
-    $<$<PLATFORM_ID:Windows>:crypto/WinSigner.cpp>
+    $<$<AND:$<PLATFORM_ID:Windows>,$<CXX_COMPILER_ID:MSVC>>:crypto/WinSigner.cpp>
     util/ZipSerialize.cpp
 )
 
@@ -161,9 +164,12 @@ target_link_libraries(digidocpp PRIVATE ${CMAKE_DL_LIBS} minizip digidocpp_tsl)
 if( BUILD_TOOLS )
     add_executable(digidoc-tool digidoc-tool.cpp)
     target_link_libraries(digidoc-tool digidocpp digidocpp_tsl Threads::Threads)
-    target_link_options(digidoc-tool PRIVATE
-        $<$<PLATFORM_ID:Windows>: /MANIFEST:NO /MANIFEST:EMBED /MANIFESTINPUT:${CMAKE_CURRENT_SOURCE_DIR}/digidoc-tool.manifest>
-    )
+    # MSVC-specific manifest embedding flags
+    if(MSVC)
+        target_link_options(digidoc-tool PRIVATE
+            /MANIFEST:NO /MANIFEST:EMBED /MANIFESTINPUT:${CMAKE_CURRENT_SOURCE_DIR}/digidoc-tool.manifest
+        )
+    endif()
     configure_file( digidoc-tool.1.cmake digidoc-tool.1 )
 endif()
 
@@ -190,7 +196,7 @@ if(SWIG_FOUND)
         )
         install(TARGETS digidoc_java DESTINATION $<IF:$<PLATFORM_ID:Darwin>,/Library/Java/Extensions,${CMAKE_INSTALL_LIBDIR}>)
         install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/java/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/ee/ria/libdigidocpp FILES_MATCHING PATTERN "*.java")
-        if(WIN32)
+        if(WIN32 AND MSVC)
             install(FILES $<TARGET_PDB_FILE:digidoc_java> DESTINATION ${CMAKE_INSTALL_BINDIR} OPTIONAL)
         endif()
         if(Java_Development_FOUND)
@@ -226,7 +232,9 @@ if(SWIG_FOUND)
         #install(CODE "execute_process(COMMAND python3 ${CMAKE_CURRENT_BINARY_DIR}/setup.py install)")
         if(WIN32)
             set(Python3_SITELIB ${CMAKE_INSTALL_BINDIR})
-            install(FILES $<TARGET_PDB_FILE:digidoc_python> DESTINATION ${Python3_SITELIB} OPTIONAL)
+            if(MSVC)
+                install(FILES $<TARGET_PDB_FILE:digidoc_python> DESTINATION ${Python3_SITELIB} OPTIONAL)
+            endif()
         else()
             find_package(Python3 COMPONENTS Interpreter) # for Python3_SITELIB
             set_target_properties(digidoc_python PROPERTIES SUFFIX .so)
@@ -250,7 +258,7 @@ if(SWIG_FOUND)
     )
     install(TARGETS digidoc_csharp DESTINATION ${CMAKE_INSTALL_LIBDIR})
     install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/csharp/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/digidocpp_csharp FILES_MATCHING PATTERN "*.cs")
-    if(WIN32)
+    if(WIN32 AND MSVC)
         install(FILES $<TARGET_PDB_FILE:digidoc_csharp> DESTINATION ${CMAKE_INSTALL_BINDIR} OPTIONAL)
     endif()
 endif()
@@ -285,13 +293,21 @@ install(FILES "${CMAKE_CURRENT_BINARY_DIR}/libdigidocpp-config-version.cmake"
 )
 
 if(WIN32)
-    list(APPEND CRYPTO_HEADER crypto/WinSigner.h)
-    target_compile_options(digidocpp_util PUBLIC "/guard:cf")
-    target_link_options(digidocpp PUBLIC "/guard:cf")
-    target_link_libraries(digidocpp PRIVATE Crypt32 cryptui ncrypt)
-    install(FILES $<TARGET_PDB_FILE:digidocpp> DESTINATION ${CMAKE_INSTALL_BINDIR} OPTIONAL)
-    if(TARGET digidoc-tool)
-        install(FILES $<TARGET_PDB_FILE:digidoc-tool> DESTINATION ${CMAKE_INSTALL_BINDIR} OPTIONAL)
+    # WinSigner disabled for MinGW builds - requires MSVC-specific APIs
+    if(MSVC)
+        list(APPEND CRYPTO_HEADER crypto/WinSigner.h)
+        target_link_libraries(digidocpp PRIVATE Crypt32 cryptui ncrypt)
+    else()
+        # MinGW: use lowercase library names, skip cryptui (MSVC-specific)
+        target_link_libraries(digidocpp PRIVATE crypt32 ncrypt)
+    endif()
+    if(MSVC)
+        target_compile_options(digidocpp_util PUBLIC "/guard:cf")
+        target_link_options(digidocpp PUBLIC "/guard:cf")
+        install(FILES $<TARGET_PDB_FILE:digidocpp> DESTINATION ${CMAKE_INSTALL_BINDIR} OPTIONAL)
+        if(TARGET digidoc-tool)
+            install(FILES $<TARGET_PDB_FILE:digidoc-tool> DESTINATION ${CMAKE_INSTALL_BINDIR} OPTIONAL)
+        endif()
     endif()
     if(SIGNCERT)
         foreach(TARGET digidocpp digidoc-tool digidoc_java digidoc_csharp digidoc_python)

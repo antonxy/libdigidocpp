@@ -28,10 +28,20 @@
 
 #include <algorithm>
 #include <sstream>
-#include <Windows.h>
+#include <windows.h>
 #include <ncrypt.h>
 #include <wincrypt.h>
+#include <prsht.h>  // Required before cryptuiapi.h for PROPSHEETPAGE types
 #include <cryptuiapi.h>
+
+// SAL annotations not available in MinGW
+#ifndef __in
+#define __in
+#define __in_opt
+#define __out
+#define __out_opt
+#define __inout
+#endif
 
 using namespace digidoc;
 using namespace std;

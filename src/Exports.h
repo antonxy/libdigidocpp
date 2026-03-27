@@ -19,7 +19,8 @@
 
 #pragma once
 
-#ifdef WIN32
+#if defined(WIN32) && defined(_MSC_VER)
+  // MSVC on Windows
   #include <winapifamily.h>
   #ifdef digidocpp_EXPORTS
     #define DIGIDOCPP_EXPORT __declspec(dllexport)
@@ -37,6 +38,20 @@
   #define DIGIDOCPP_WARNING_DISABLE_GCC(text)
   #define DIGIDOCPP_WARNING_DISABLE_MSVC(number) __pragma(warning(disable: number))
   #pragma warning( disable: 4251 ) // shut up std::vector warnings
+#elif defined(WIN32)
+  // MinGW/GCC on Windows
+  #ifdef digidocpp_EXPORTS
+    #define DIGIDOCPP_EXPORT __declspec(dllexport)
+  #else
+    #define DIGIDOCPP_EXPORT __declspec(dllimport)
+  #endif
+  #define DIGIDOCPP_DEPRECATED __attribute__ ((__deprecated__))
+  #define DIGIDOCPP_DO_PRAGMA(text) _Pragma(#text)
+  #define DIGIDOCPP_WARNING_PUSH DIGIDOCPP_DO_PRAGMA(GCC diagnostic push)
+  #define DIGIDOCPP_WARNING_POP DIGIDOCPP_DO_PRAGMA(GCC diagnostic pop)
+  #define DIGIDOCPP_WARNING_DISABLE_CLANG(text)
+  #define DIGIDOCPP_WARNING_DISABLE_GCC(text) DIGIDOCPP_DO_PRAGMA(GCC diagnostic ignored text)
+  #define DIGIDOCPP_WARNING_DISABLE_MSVC(number)
 #else
   #define DIGIDOCPP_EXPORT __attribute__ ((visibility("default")))
   #define DIGIDOCPP_DEPRECATED __attribute__ ((__deprecated__))

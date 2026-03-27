@@ -30,8 +30,8 @@
 #include <sys/types.h>
 
 #ifdef _WIN32
-#include <Windows.h>
-#include <ShlObj_core.h>
+#include <windows.h>
+#include <shlobj.h>
 #include <direct.h>
 #include <sys/utime.h>
 #else

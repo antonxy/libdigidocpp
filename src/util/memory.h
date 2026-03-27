@@ -19,6 +19,7 @@
 
 #pragma once
 
+#include <cstddef>
 #include <memory>
 
 namespace digidoc
@@ -76,7 +77,7 @@ constexpr auto make_unique_ptr(T *p) noexcept
 
 template<auto D>
 [[nodiscard]]
-constexpr auto make_unique_ptr(nullptr_t) noexcept
+constexpr auto make_unique_ptr(std::nullptr_t) noexcept
 {
     return unique_free_d<D>(nullptr);
 }
